@@ -1,0 +1,17 @@
+<snippet>
+	<content><![CDATA[
+int power(int base, int exp) {
+    int res=1;
+    while (exp > 0) {
+       if (exp % 2 == 1) res = (res * base) % mod;
+       base = (base * base) % mod;
+       exp /= 2;
+    }
+    return res % mod;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>fastexpo</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet wiint trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

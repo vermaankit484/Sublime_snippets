@@ -1,0 +1,40 @@
+<snippet>
+	<content><![CDATA[
+//Requires 1 based indexing
+struct FenwickTree {
+    vector<int> bit;  // binary indexed tree
+    int n;
+
+    FenwickTree(int n) {
+        this->n = n + 1;
+        bit.assign(n + 1, 0);
+    }
+
+    FenwickTree(vector<int> a)
+        : FenwickTree(a.size()) {
+        for (size_t i = 0; i < a.size(); i++)
+            add(i, a[i]);
+    }
+
+    int sum(int idx) {
+        int ret = 0;
+        for (; idx > 0; idx -= idx & -idx)
+            ret += bit[idx];
+        return ret;
+    }
+
+    int sum(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+
+    void add(int idx, int delta) {
+        for (; idx < n; idx += idx & -idx)
+            bit[idx] += delta;
+    }
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>BIT</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet wiint trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

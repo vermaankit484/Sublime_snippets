@@ -1,0 +1,48 @@
+<snippet>
+	<content><![CDATA[
+//0-based indexing
+struct Hash{
+  vector<int> fhash, rhash, powr;
+  int p = 29, n; // >= distinct characters
+  Hash(string s) {
+    n = s.length();
+    fhash.resize(n + 1, 0);
+    powr.resize(n + 1, 0);
+    rhash.resize(n + 1, 0);
+    powr[0] = 1, fhash[0] = s[0] - 'a' + 1; // take care of character to subtract
+    rhash[n - 1] = s[n - 1] - 'a' + 1;
+    for (int i = 1; i < n; i++) {
+      powr[i] = (powr[i - 1] * p) % mod;
+      fhash[i] = ((fhash[i - 1] * p) % mod + (s[i] - 'a' + 1)) % mod;
+      rhash[n - 1 - i] = ((rhash[n - i] * p) % mod + s[n - i - 1] - 'a' + 1) % mod;
+    }
+  }
+  int frontHash(int i, int j) {
+    if (i == 0) return fhash[j];
+    int hashvalue = (fhash[j] - (fhash[i - 1] * powr[j - i + 1]) % mod + mod) % mod;
+    return hashvalue;
+  }
+  int reverseHash(int i, int j) {
+    if (j == n - 1) return rhash[i];
+    int hashvalue = (rhash[i] - (rhash[j + 1] * powr[j - i + 1]) % mod + mod) % mod;
+    return hashvalue;
+  }
+  bool isPalindrome(int i, int j) {
+    int len = (j - i + 1) / 2;
+    int fhashh, rhashh;
+    fhashh = frontHash(i, i + len - 1);
+    if ((j - i + 1) % 2) {
+      rhashh = reverseHash(len + 1 + i, 2 * len + i);
+    } else {
+      rhashh = reverseHash(len + i, 2 * len - 1 + i);
+    }
+    return fhashh == rhashh ? true : false;
+  }
+};
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>Rollinghashing</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

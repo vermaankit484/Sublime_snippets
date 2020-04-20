@@ -1,0 +1,73 @@
+<snippet>
+	<content><![CDATA[
+//This is the template for sum of a range and updating a particular range using lazy propagation
+//Remember to keep size of seg tree array and lazy prop array as 4*n+1
+//If you just want to do range query then just remove lazypush implementation
+
+vector<int> arr, seg, lazy;
+
+void init(int v, int l , int r)
+{
+	if (l == r)
+	{
+		seg[v] = arr[l];
+		lazy[v] = 0;
+		return;
+	}
+	int mid = (l+r)/2;
+	init(2*v,l , mid);
+	init(2*v+1, mid+1, r);
+	seg[v] = seg[2*v]+seg[2*v+1];
+}
+
+void lazypush(int v, int l, int r)
+{
+	if (lazy[v] != 0)
+	{
+		seg[v] += (r-l+1)*lazy[v];//because sum fiint be reflected at every child
+		if (l != r)
+		{
+			lazy[2*v] += lazy[v];
+			lazy[2*v+1] += lazy[v];
+		}
+		lazy[v] = 0;
+	}
+}
+
+int query(int v, int l, int r, int s, int e)
+{
+	lazypush(v, s, e);
+	if(l>r||s>e||r<s||l>e)
+		return 0;			//if not in range we returned 0 so that it doesn't make any change
+	if (s >= l && e <= r)
+		return seg[v];
+	int mid = (s+e)/2;
+	return query(2*v, l, r, s, mid)+query(2*v+1, l ,r, mid+1, e);
+}
+
+void update(int v, int l, int r, int s, int e, int val)
+{
+	lazypush(v,s,e);
+	if(l>r||s>e||r<s||l>e)
+		return;
+	if (s >= l && e <= r)
+	{
+		seg[v] += (e-s+1)*val;
+		if (s != e)
+		{
+			lazy[2*v] += val;
+			lazy[2*v+1] += val;
+		}
+		return;
+	}
+	int mid = (s+e)/2;
+	update(2*v, l , r, s, mid, val);
+	update(2*v+1, l ,r, mid+1, e, val);
+	seg[v] = seg[2*v]+seg[2*v+1];
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>segtemp</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet wiint trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

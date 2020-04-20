@@ -1,0 +1,57 @@
+<snippet>
+	<content><![CDATA[
+//Trie implementation for sheokand and strings
+
+struct node {
+	node *child[26];
+	bool ed;
+};
+
+node *trie;
+
+node *get_node() {
+	node *temp = new node();
+	for(int i=0; i<26; i++){
+		temp->child[i]=NULL;
+	}
+	temp->ed=false;
+	return temp;
+}
+
+//O(log A_MAX)
+void insert(node *root, string str) {
+	for(int i=0; i<str.length(); i++){
+		int k=str[i]-'a';
+		if(root->child[k]==NULL){
+			root->child[k]=get_node();
+		}
+		root=root->child[k];
+		if(i==str.length()-1) root->ed=true;
+	}
+}
+
+string give(node* root, string str){
+	string ss;
+	int k;
+	for(int i=0; i<str.length(); i++){
+		k=str[i]-'a';
+		if(root->child[k]==NULL) break;
+		root=root->child[k];
+		ss.push_back(str[i]);
+	}
+	if(root->ed) return ss;
+	for(int i=0; i<26; i++){
+		if(root->ed) break;
+		if(root->child[i]!=NULL){
+			root=root->child[i];
+			ss.push_back(i+'a');
+		}
+	}
+	return ss;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>trie1</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

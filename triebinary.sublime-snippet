@@ -1,0 +1,72 @@
+<snippet>
+	<content><![CDATA[
+
+//Trie implementation for finding xor maximisation & minimisation
+
+
+struct node {
+	node *child[2];
+};
+
+const int LN=32;
+
+node *trie;
+
+node *get_node() {
+	node *temp = new node();
+	temp->child[0] = NULL;
+	temp->child[1] = NULL;
+	return temp;
+}
+
+//O(log A_MAX)
+void insert(node *root, int n) {
+	for(int i = LN-1; i >= 0; --i) {
+		int x = (n&(1ll << i)) ? 1 : 0;
+		if (root->child[x] == NULL) {
+			root->child[x] = get_node();
+		}
+		root = root->child[x];
+	}
+}
+
+//O(log A_MAX)
+int query_min(node *root, int n) {
+	int ans = 0;
+	for(int i = LN-1; i >= 0; --i) {
+		int x = (n&(1ll << i)) ? 1 : 0;
+		assert(root != NULL);
+		if (root->child[x] != NULL) {
+			root = root->child[x];
+		}
+		else {
+			ans ^= (1ll << i);
+			root = root->child[1^x];
+		}
+	}
+	return ans;
+}
+
+//O(log A_MAX)
+int query_max(node *root, int n) {
+	int ans = 0;
+	for(int i = LN-1; i >= 0; --i) {
+		int x = (n&(1ll << i)) ? 1 : 0;
+		assert(root != NULL);
+		if (root->child[1^x] != NULL) {
+			ans ^= (1ll << i);
+			root = root->child[1^x];
+		}
+		else {
+			root = root->child[x];
+		}
+	}
+	return ans;
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>triebinary</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
