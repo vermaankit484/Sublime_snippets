@@ -1,0 +1,73 @@
+<snippet>
+	<content><![CDATA[
+const int mod1 = (int) 1e9+7;
+const int mod2 = (int) 1e9+9;
+//0-based indexing
+struct Hash{
+  vector<int> fhash1, rhash1, powr1, fhash2, rhash2, powr2;
+  int p1 = 83, p2 = 97, n; // >= distinct characters
+  Hash(string s) {
+    n = s.length();
+    fhash1.resize(n + 1, 0);
+    powr1.resize(n + 1, 0);
+    rhash1.resize(n + 1, 0);
+    fhash2.resize(n + 1, 0);
+    powr2.resize(n + 1, 0);
+    rhash2.resize(n + 1, 0);
+
+    powr1[0] = 1, fhash1[0] = s[0] - 'a' + 1;
+    rhash1[n - 1] = s[n - 1] - 'a' + 1;
+
+    powr2[0] = 1, fhash2[0] = s[0] - 'a' + 1;
+    rhash2[n - 1] = s[n - 1] - 'a' + 1;
+    for (int i = 1; i < n; i++) {
+      powr1[i] = (powr1[i - 1] * p1) % mod1;
+      fhash1[i] = ((fhash1[i - 1] * p1) % mod1 + (s[i] - 'a' + 1)) % mod1;
+      rhash1[n - 1 - i] = ((rhash1[n - i] * p1) % mod1 + s[n - i - 1] - 'a' + 1) % mod1;
+
+      powr2[i] = (powr2[i - 1] * p2) % mod2;
+      fhash2[i] = ((fhash2[i - 1] * p2) % mod2 + (s[i] - 'a' + 1)) % mod2;
+      rhash2[n - 1 - i] = ((rhash2[n - i] * p2) % mod2 + s[n - i - 1] - 'a' + 1) % mod2;
+    }
+  }
+  int frontHash1(int i, int j) {
+    if (i == 0) return fhash1[j];
+    int hashvalue = (fhash1[j] - (fhash1[i - 1] * powr1[j - i + 1]) % mod1 + mod1) % mod1;
+    return hashvalue;
+  }
+  int frontHash2(int i, int j) {
+    if (i == 0) return fhash2[j];
+    int hashvalue = (fhash2[j] - (fhash2[i - 1] * powr2[j - i + 1]) % mod2 + mod2) % mod2;
+    return hashvalue;
+  }
+  int reverseHash1(int i, int j) {
+    if (j == n - 1) return rhash1[i];
+    int hashvalue = (rhash1[i] - (rhash1[j + 1] * powr1[j - i + 1]) % mod1 + mod1) % mod1;
+    return hashvalue;
+  }
+  int reverseHash2(int i, int j) {
+    if (j == n - 1) return rhash2[i];
+    int hashvalue = (rhash2[i] - (rhash2[j + 1] * powr2[j - i + 1]) % mod2 + mod2) % mod2;
+    return hashvalue;
+  }
+  bool isPalindrome(int i, int j) {
+    int len = (j - i + 1) / 2;
+    int fhashh1, rhashh2, fhashh2, rhashh1;
+    fhashh1 = frontHash1(i, i + len - 1);
+    fhashh2 = frontHash2(i, i + len - 1);
+    if ((j - i + 1) % 2) {
+      rhashh1 = reverseHash1(len + 1 + i, 2 * len + i);
+      rhashh2 = reverseHash2(len + 1 + i, 2 * len + i);
+    } else {
+      rhashh1 = reverseHash1(len + i, 2 * len - 1 + i);
+      rhashh2 = reverseHash2(len + i, 2 * len - 1 + i);
+    }
+    return (fhashh1 == rhashh1 and fhashh2 == rhashh2) ? true : false;
+  }
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>DoubleHashing</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
