@@ -1,7 +1,6 @@
 <snippet>
 	<content><![CDATA[
 //0-based indexing
-//Use double hashing to prevent hacking and mods to be used maybe(mod1 1e9+7 and mod2 1e9+9)
 struct Hash{
   vector<int> fhash, rhash, powr;
   int p = 31, n; // >= distinct characters 
